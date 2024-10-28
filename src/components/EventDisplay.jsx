@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function EventDisplay({ event: currentEvent }) {
+export default function EventDisplay({ event: currentEvent , categories}) {
     const [person, setPerson] = useState({
         firstName: '', 
         lastName: '',
@@ -31,18 +31,33 @@ export default function EventDisplay({ event: currentEvent }) {
         );
     });
 
-    const addPerson = (event) => {
-        event.preventDefault();
-        setPerson({
+    let categoriesOptions = [];
+
+    categories.categories.member.map((categorie) => {
+        categoriesOptions.push(
+        <option key={categorie.id} value={categorie.id} >
+            {categorie.name}
+        </option>
+        );
+    });
+
+    async function handleSubmit(event) {
+        await setPerson({
             ...person,
             'firstName': new FormData(event.target).get('firstname').valueOf(),
             'lastName': new FormData(event.target).get('lastname').valueOf(),
-        })
-        console.log(person)
-        const newPeople = fetch("http://localhost:8000/api/people", {
+        });
+        event.preventDefault();
+        if (person.firstName != '') {
+            addPerson(person);
+        }
+    }
+
+    async function addPerson(p) {
+        const newPeople = await fetch("http://localhost:8000/api/people", {
             method: "POST",
             headers: { "Content-Type": "application/ld+json" },
-            body: JSON.stringify(person)
+            body: JSON.stringify(p)
         });
     }
 
@@ -59,10 +74,18 @@ export default function EventDisplay({ event: currentEvent }) {
                     {expenses}
                 </div>
             </article>
-            <form className="flex flex-row border rounded-lg p-4 justify-left gap-4 max-w-5xl mx-auto" onSubmit={addPerson}>
+            <form className="flex flex-row border rounded-lg p-4 justify-left gap-4 max-w-5xl mx-auto mb-4" onSubmit={handleSubmit}>
                 <h3 className="mb-2">Ajouter une personne au groupe :</h3>
                 <input type="text" name="firstname" placeholder="Prénom" className="border p-1 rounded-lg text-center" required/>
                 <input type="text" name="lastname" placeholder="Nom" className="border p-1 rounded-lg text-center" required/>
+                <button type="submit" className="border p-1 px-4 bg-emerald-800 text-white rounded-lg text-center" required>Ajouter</button>
+            </form>
+            <form className="flex flex-row border rounded-lg p-4 justify-left gap-4 max-w-5xl mx-auto">
+                <h3 className="mb-2">Ajouter une dépense à l'évènement :</h3>
+                <input type="text" name="expenseTitle" placeholder="Nom de la dépense" className="border p-1 rounded-lg text-center" required/>
+                <select name="categorie" className="border p-1 rounded-lg text-center">
+                    {categoriesOptions}
+                </select>
                 <button type="submit" className="border p-1 px-4 bg-emerald-800 text-white rounded-lg text-center" required>Ajouter</button>
             </form>
         </>
