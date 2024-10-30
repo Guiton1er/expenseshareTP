@@ -68,7 +68,7 @@ export default function EventDisplay({ event: currentEvent , categories}) {
                             <div key={expense.id} className="flex flex-col mx-2 p-2 gap-1 bg-slate-100 rounded-lg">
                                 <h2 className="text-xl">{expense.title}</h2>
                                 <p>Dépense : {expense.amount}€</p>
-                                {expense.paid ? <button  className="bg-emerald-800 text-white p-1 rounded-lg text-center">Payé</button> : <button className="bg-red-800 text-white p-1 rounded-lg text-center">Non payé</button>}
+                                {expense.paid ? <button className="bg-emerald-800 text-white p-1 rounded-lg text-center">Payé</button> : <button className="bg-red-800 text-white p-1 rounded-lg text-center">Non payé</button>}
                                 <p>Pris en charge par {expense.person.firstName} {expense.person.lastName}</p>
                             </div>
                         );
